@@ -1,4 +1,5 @@
 from map import Map
+from typing import List, Tuple
 import numpy as np
 
 
@@ -8,8 +9,8 @@ class Colony:
         """
         Keeps all ants and a map and moves them in each iteration
         :param matrix: represents costs of moving between points
-        :param alpha: importance of pheromone
-        :param intensity: pheromone intensity
+        :param alpha: importance of pheromone in choosing route
+        :param intensity: pheromone intensity (how much ants deposit)
         :param ants_num: number of ants in colony
         :param evaporation: how quickly pheromone evaporates
         """
@@ -22,13 +23,21 @@ class Colony:
         self.ants = None
         self.evaporation = evaporation
 
-    def init_ants(self, ants_num):
+    def init_ants(self, ants_num) -> List:
+        """
+        Create set of new ants
+        :param ants_num: number of ants
+        :return: list of ants
+        """
         temp = []
         for i in range(ants_num):
             temp.append(Ant(self))
         return temp
 
     def update_pheromone(self):
+        """
+        Reduces present pheromone according to evaporation rate, and then adds pheromones deposited by ants.
+        """
         # evaporate pheromone
         for i in range(len(self.map.matrix)):
             for j in range(len(self.map.matrix)):
@@ -38,9 +47,15 @@ class Colony:
         # add pheromones from ants
         for ant in self.ants:
             for i in range(1, len(ant.visited)):
-                self.map.pheromones[ant.visited[i - 1]][ant.visited[i]] += self.intensity / self.map.matrix[ant.visited[i - 1]][ant.visited[i]]
+                # divide by length of whole road to make longer routes less desirable
+                self.map.pheromones[ant.visited[i - 1]][ant.visited[i]] += self.intensity / ant.travel_time
 
-    def solve_route(self):
+    def solve_route(self) -> Tuple[int, List[int]]:
+        """
+        Looks for best solution. For each iteration creates new set of ants, each of them choose route and then
+        pheromones are updated.
+        :return: lowest found time of travel and corresponding route
+        """
         lowest_cost = float('inf')
         best_route = []
         for i in range(self.iterations):
@@ -59,6 +74,10 @@ class Colony:
 
 class Ant:
     def __init__(self, colony: Colony):
+        """
+        Single ant that travels through map.
+        :param colony: ant's colony
+        """
         self.colony = colony
         self.current_position = colony.start
         self.visited = []
@@ -67,6 +86,9 @@ class Ant:
         self.prev_position = -1
 
     def next_node(self):
+        """
+        Choose next node where ant is going, based on pheromones already on the map.
+        """
         # create list of possible next nodes
         possible_nodes = []
         for i in range(len(self.colony.map)):
