@@ -5,7 +5,7 @@ import numpy as np
 
 class Colony:
     def __init__(self, matrix: np.ndarray, alpha: float, iterations: int, intensity: int, ants_num: int,
-                 evaporation: float):
+                 evaporation: float, beta: float):
         """
         Keeps all ants and a map and moves them in each iteration
         :param matrix: represents costs of moving between points
@@ -13,6 +13,7 @@ class Colony:
         :param intensity: pheromone intensity (how much ants deposit)
         :param ants_num: number of ants in colony
         :param evaporation: how quickly pheromone evaporates
+        :param beta: how much heuristic is important
         """
         self.start = 0
         self.map = Map(matrix)
@@ -22,6 +23,7 @@ class Colony:
         self.ants_num = ants_num
         self.ants = None
         self.evaporation = evaporation
+        self.beta = beta
 
     def init_ants(self, ants_num) -> List:
         """
@@ -98,13 +100,15 @@ class Ant:
         # calculate denominator
         den = 0
         for i in possible_nodes:
-            den += self.colony.map.pheromones[self.current_position][i] ** self.colony.alpha
+            den += self.colony.map.pheromones[self.current_position][i] ** self.colony.alpha \
+                   * self.colony.map.heuristic[self.current_position][i] ** self.colony.beta
 
         # calculate probabilities for each next node
         probabilities = []
         for i in range(len(self.colony.map)):
             if i in possible_nodes:
-                probabilities.append(self.colony.map.pheromones[self.current_position][i] ** self.colony.alpha / den)
+                probabilities.append(self.colony.map.pheromones[self.current_position][i] ** self.colony.alpha
+                                     * self.colony.map.heuristic[self.current_position][i] ** self.colony.beta / den)
         probabilities = np.asarray(probabilities)
         possible_nodes = np.asarray(possible_nodes)
 
