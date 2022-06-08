@@ -1,6 +1,7 @@
-from map import Map
+from src.map import Map
 from typing import List, Tuple
 import numpy as np
+from src.visualization import create_plot
 
 
 class Colony:
@@ -60,6 +61,7 @@ class Colony:
         """
         lowest_cost = float('inf')
         best_route = []
+        best_no = 0
         for i in range(self.iterations):
             self.ants = self.init_ants(self.ants_num)
             for ant in self.ants:
@@ -70,7 +72,10 @@ class Colony:
                 if ant.travel_time < lowest_cost:
                     lowest_cost = ant.travel_time
                     best_route = ant.visited.copy()
-                self.update_pheromone()
+                    create_plot(self.map.points, best_route, best_no)
+                    print(f"ITER {i} --- COST: {lowest_cost}, PATH: {best_route}")
+                    best_no += 1
+            self.update_pheromone()
         return lowest_cost, best_route
 
 
@@ -118,4 +123,3 @@ class Ant:
         self.visited.append(my_next_node)
         self.travel_time += self.colony.map.matrix[self.current_position][my_next_node]
         self.current_position = my_next_node
-
