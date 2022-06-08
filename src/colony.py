@@ -73,10 +73,10 @@ class Colony:
                     lowest_cost = ant.travel_time
                     best_route = ant.visited.copy()
                     create_plot(self.map.points, best_route, best_no)
-                    print(f"ITER {i} --- COST: {lowest_cost}, PATH: {best_route}")
+                    print(f"ITER {i:.3f} --- COST: {lowest_cost}, PATH: {best_route}")
                     best_no += 1
             self.update_pheromone()
-        return lowest_cost, best_route
+        return best_no, lowest_cost, best_route
 
 
 class Ant:
