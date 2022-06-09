@@ -46,7 +46,7 @@ class Colony:
             for j in range(len(self.map.matrix)):
                 if i == j:
                     continue
-                self.map.pheromones[i][j] *= self.evaporation
+                self.map.pheromones[i][j] *= 1/self.evaporation
         # add pheromones from ants
         for ant in self.ants:
             for i in range(1, len(ant.visited)):
@@ -73,7 +73,7 @@ class Colony:
                     lowest_cost = ant.travel_time
                     best_route = ant.visited.copy()
                     create_plot(self.map.points, best_route, best_no, lowest_cost)
-                    print(f"ITER {i:.3f} --- COST: {lowest_cost}, PATH: {best_route}")
+                    print(f"ITER {i:.3f} --- COST: {lowest_cost:.4f}, PATH: {best_route}")
                     best_no += 1
             self.update_pheromone()
         return best_no, lowest_cost, best_route

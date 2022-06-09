@@ -22,7 +22,7 @@ class Map:
                 if i == j:
                     self.heuristic[i][j] = float('inf')
                 else:
-                    self.heuristic[i][j] = 1 / len(self)
+                    self.heuristic[i][j] = 1 / self.matrix[i][j]
 
     def __len__(self):
         return len(self.matrix)
