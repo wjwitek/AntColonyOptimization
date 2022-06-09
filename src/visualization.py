@@ -19,7 +19,7 @@ def create_plot(points, path, iter):
     plt.clf()
 
 def browse_images(iters):
-    root_wind = "Motion detector"
+    root_wind = "Ant Colony Algorithm Visualization"
     cv2.namedWindow(root_wind)
     cv2.createTrackbar("Stage", root_wind, 0, iters-1, lambda x: x)
     cv2.setTrackbarPos("Stage", root_wind, 0)
