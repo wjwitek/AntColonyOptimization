@@ -1,6 +1,28 @@
 from src.colony import Colony
+from src.visualization import browse_images
 import numpy as np
+import os
 
-test_matrix = np.asarray([[float('inf'), 1, 2], [3, float('inf'), 1], [1, 3, float('inf')]])
-colony = Colony(test_matrix, 0.2, 100, 5, 100, 0.1, 0.05)
-print(colony.solve_route())
+TEST_MAP_1 = np.array([(1,1), (1,2), (2,1), (3,6), (3,-1), (5,1)])
+TEST_MAP_2 = 0  # TODO
+
+ALPHA = 0.2
+ITERATIONS = 10
+INTENSITY = 5
+ANTS_NO = 100
+EVAPORATION = 0.5
+BETA = 0.05
+
+colony = Colony(TEST_MAP_1, ALPHA, ITERATIONS, INTENSITY, ANTS_NO, EVAPORATION, BETA)
+
+results = colony.solve_route()
+
+browse_images(results[0])
+
+i = 0
+while True:
+    try:
+        os.remove(f"img_{i}.jpg")
+        i += 1
+    except FileNotFoundError:
+        break

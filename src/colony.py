@@ -1,6 +1,7 @@
-from map import Map
+from src.map import Map
 from typing import List, Tuple
 import numpy as np
+from src.visualization import create_plot
 
 
 class Colony:
@@ -52,7 +53,7 @@ class Colony:
                 # divide by length of whole road to make longer routes less desirable
                 self.map.pheromones[ant.visited[i - 1]][ant.visited[i]] += self.intensity / ant.travel_time
 
-    def solve_route(self) -> Tuple[int, List[int]]:
+    def solve_route(self) -> Tuple[int, int, List[int]]:
         """
         Looks for best solution. For each iteration creates new set of ants, each of them choose route and then
         pheromones are updated.
@@ -60,6 +61,7 @@ class Colony:
         """
         lowest_cost = float('inf')
         best_route = []
+        best_no = 0
         for i in range(self.iterations):
             self.ants = self.init_ants(self.ants_num)
             for ant in self.ants:
@@ -70,8 +72,11 @@ class Colony:
                 if ant.travel_time < lowest_cost:
                     lowest_cost = ant.travel_time
                     best_route = ant.visited.copy()
-                self.update_pheromone()
-        return lowest_cost, best_route
+                    create_plot(self.map.points, best_route, best_no, lowest_cost)
+                    print(f"ITER {i:.3f} --- COST: {lowest_cost}, PATH: {best_route}")
+                    best_no += 1
+            self.update_pheromone()
+        return best_no, lowest_cost, best_route
 
 
 class Ant:
@@ -118,4 +123,3 @@ class Ant:
         self.visited.append(my_next_node)
         self.travel_time += self.colony.map.matrix[self.current_position][my_next_node]
         self.current_position = my_next_node
-
