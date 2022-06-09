@@ -1,7 +1,8 @@
 import matplotlib.pyplot as plt
 import cv2
 
-def create_plot(points, path, iter):
+
+def create_plot(points, path, iter, cost):
     first = True
     for x, y in points:
         if first: 
@@ -14,6 +15,8 @@ def create_plot(points, path, iter):
         x2, y2 = points[path[i]][0], points[path[i]][1]
 
         plt.plot([x1,x2], [y1,y2], "ko-")
+
+    plt.title("Time travel " + str(round(cost, 2)))
 
     plt.savefig(f"img_{iter}.jpg")
     plt.clf()

@@ -53,7 +53,7 @@ class Colony:
                 # divide by length of whole road to make longer routes less desirable
                 self.map.pheromones[ant.visited[i - 1]][ant.visited[i]] += self.intensity / ant.travel_time
 
-    def solve_route(self) -> Tuple[int, List[int]]:
+    def solve_route(self) -> Tuple[int, int, List[int]]:
         """
         Looks for best solution. For each iteration creates new set of ants, each of them choose route and then
         pheromones are updated.
@@ -72,7 +72,7 @@ class Colony:
                 if ant.travel_time < lowest_cost:
                     lowest_cost = ant.travel_time
                     best_route = ant.visited.copy()
-                    create_plot(self.map.points, best_route, best_no)
+                    create_plot(self.map.points, best_route, best_no, lowest_cost)
                     print(f"ITER {i:.3f} --- COST: {lowest_cost}, PATH: {best_route}")
                     best_no += 1
             self.update_pheromone()
